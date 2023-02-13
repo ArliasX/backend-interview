@@ -1,12 +1,26 @@
 version: '3.9'
 
 services:
-  mongodb:
-    image: mongo:5.0
+
+  db:
+    image: neo4j:community
     ports:
-      - 27017:27017
+      - 7474:7474
+      - 7687:7687
     volumes:
-      - ~/apps/mongo:/data/db
+      - ~/neo4j/data:/data
     environment:
       - MONGO_INITDB_ROOT_USERNAME=aquacloud
       - MONGO_INITDB_ROOT_PASSWORD=aquacloud
+
+  api:
+    container_name: api
+    image: spring-backend-interview-api-img
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    restart: always
